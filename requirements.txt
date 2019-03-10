@@ -1,0 +1,9 @@
+wx
+wolframalpha
+wikipedia
+os
+pyttsx3
+speech_recognition
+win32com.client
+gTTS
+flask
