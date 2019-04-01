@@ -18,6 +18,4 @@ General Information like weather,day,date,time
 
 And basically a virtual friend who would answer all your questions...
 
-To run the application,you must have a API key, and the packages mentioned in requirements.txt file.
-
-Download the trial.py and index.html file. 
+To run the application,you must have a API key.
