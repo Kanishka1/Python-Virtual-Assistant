@@ -15,13 +15,11 @@ engine.runAndWait()
 
 def say(text):
     rate = engine.getProperty('rate')
-    engine.setProperty('rate', rate-15)
+    engine.setProperty('rate', rate-18)
     engine.say(text)
     engine.runAndWait()
 
-say('Hii There! To begin with, go to the bottom of the page using the scroller of the mouse. Once you reach the bottom of the page, click on the bottom left corner of the screen to issue a query')
-say('If you want me to make your notes, click at the centre')
-say('If you want to use the DoctorBot, click at the bottom right corner of the screen')
+
 app = Flask(__name__)
 @app.route("/")
 def home():
@@ -71,26 +69,39 @@ def medi():
             a4 = ["You can try out a Metrogyl Gel"]
             pair5 = ['Bye','Thanks for your help','quit']
             a5 = ["BBye take care. See you soon :) ", "It was nice talking to you. See you soon :)"]
-            if input in pair1:
-                chat = random.choice(a1)
-                print(chat)
-                say(chat)
-            if input in pair2:
-                chat = random.choice(a2)
-                print(chat)
-                say(chat)
-            if input in pair3:
-                chat = random.choice(a3)
-                print(chat)
-                say(chat)
-            if input in pair4:
-                chat = random.choice(a4)
-                print(chat)
-                say(chat)
-            if input in pair5:
-                chat = random.choice(a5)
-                print(chat)
-                say(chat)
+            input = input.lower()
+            if input == '':
+                r = sr.Recognizer()
+                with sr.Microphone() as source:
+                    audio = r.listen(source)
+                try:
+                    speech = r.recognize_google(audio)
+                    self.txt.SetValue(speech)
+                except sr.UnknownValueError:
+                    print("Google Speech Recognition could not understand audio")
+                except sr.RequestError as e:
+                    print("Could not request results from Google Speech Recognition service;{0}".format(e))
+            else:
+                if input in pair1:
+                    chat = random.choice(a1)
+                    print(chat)
+                    say(chat)
+                if input in pair2:
+                    chat = random.choice(a2)
+                    print(chat)
+                    say(chat)
+                if input in pair3:
+                    chat = random.choice(a3)
+                    print(chat)
+                    say(chat)
+                if input in pair4:
+                    chat = random.choice(a4)
+                    print(chat)
+                    say(chat)
+                if input in pair5:
+                    chat = random.choice(a5)
+                    print(chat)
+                    say(chat)
 
     if __name__ == '__main__':
         app = wx.App(True)
@@ -108,9 +119,6 @@ def index():
                               title="Python Virtual Assistant")
             panel = wx.Panel(self)
             self.SetBackgroundColour('plum')
-            # dc=wx.EVT_PAINT(self.DrawBitmap(wx.Bitmap("pex.jpg")))
-            # self.SeBackgroundStyle(dc)
-
             pic = wx.Icon("download.png", wx.BITMAP_TYPE_PNG)
 
             self.SetIcon(pic)
@@ -137,7 +145,7 @@ def index():
                 with sr.Microphone() as source:
                     audio = r.listen(source)
                 try:
-                    speech = r.recognize_bing(audio)
+                    speech = r.recognize_google(audio)
                     self.txt.SetValue(speech)
                 except sr.UnknownValueError:
                     print("Google Speech Recognition could not understand audio")
@@ -145,14 +153,13 @@ def index():
                     print("Could not request results from Google Speech Recognition service;{0}".format(e))
             else:
                 try:
-                    app_id = ""
+                    app_id = "Your App ID Here"
                     client = wolframalpha.Client(app_id)
                     res = client.query(input)
                     answer = next(res.results).text
                     print(answer)
                     engine = pyttsx3.init()
                     say(("Your answer is " + answer))
-
                 except:
                     input = input.split(' ')
                     input = " ".join(input[0:])
