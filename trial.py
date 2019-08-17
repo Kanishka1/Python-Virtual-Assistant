@@ -27,7 +27,7 @@ say('click on the bottom right corner of the screen If you want me to find out m
 app = Flask(__name__)
 @app.route("/")
 def home():
-    return render_template("index1.html")
+    return render_template("index.html")
 
 @app.route("/voice")
 def voice():
