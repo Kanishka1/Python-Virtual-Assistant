@@ -5,25 +5,29 @@ import pyttsx3
 import speech_recognition as sr
 import win32com.client as wincl
 import random
-from flask import Flask, render_template
+from flask import Flask,render_template
 
 speak = wincl.Dispatch("SAPI.SpVoice")
 engine = pyttsx3.init()
 rate = engine.getProperty('rate')
-engine.setProperty('rate', rate-15)
+engine.setProperty('rate', rate-3)
 engine.runAndWait()
+
 
 def say(text):
     rate = engine.getProperty('rate')
-    engine.setProperty('rate', rate-18)
+    engine.setProperty('rate', rate-5)
     engine.say(text)
     engine.runAndWait()
 
-
+say('Welcome User Kindly scroll to the bottom of the page with the scroller of the mouse just once')
+say('Then Click on the bottom left corner of the screen to issue a voice query')
+say('Click on the center of the screen to make your notes ')
+say('click on the bottom right corner of the screen If you want me to find out medicines for you')
 app = Flask(__name__)
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index1.html")
 
 @app.route("/voice")
 def voice():
@@ -33,12 +37,10 @@ def voice():
 def medi():
     class MyFrame(wx.Frame):
         def __init__(self):
-            wx.Frame.__init__(self, None,pos=wx.DefaultPosition, size=wx.Size(1250, 950),style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX| wx.CLIP_CHILDREN,
+            wx.Frame.__init__(self, None, pos=wx.DefaultPosition, size=wx.Size(1250, 950),style=wx.MINIMIZE_BOX |wx.CLOSE_BOX| wx.SYSTEM_MENU | wx.CAPTION| wx.CLIP_CHILDREN,
                 title="Python Medical Assistant")
             panel = wx.Panel(self)
             self.SetBackgroundColour('plum')
-
-
             pic = wx.Icon("download.png", wx.BITMAP_TYPE_PNG)
 
             self.SetIcon(pic)
@@ -60,20 +62,24 @@ def medi():
             input = self.txt.GetValue()
             self.txt.SetValue(input)
             pair1 = ['dizzy', "nauseated","lithargic",'restless']
-            a1 = ["Try taking a XYZ medicine"]
+            a1 = ["Try taking a lorazepam [Ativan]) medicine","Try taking a  meclizine (Antivert)"]
             pair2 = ["fever", "cough", "cold", "mild chills", "high temperature"]
             a2 = ["Try taking a Ibuproven","Calpol(Paracetamol)500mg","Azithromycin 250mg","Citrizine(CTZ)","Try having a Acetaminophen(Tylenol)"]
-            pair3 = ["headache","bodyache","stomachache"]
+            pair3 = ["head ache","body ache","stomach ache"]
             a3 = ["Try having a aspirin + acetaminophen + caffeine"]
             pair4 = ["dental pain","teeth pain","tooth pain"]
             a4 = ["You can try out a Metrogyl Gel"]
             pair5 = ['Bye','Thanks for your help','quit']
             a5 = ["BBye take care. See you soon :) ", "It was nice talking to you. See you soon :)"]
+            pair6=["high blood pressure"," low blood pressure"]
+            a6=["Furosemide (Lasix)"]
             input = input.lower()
             if input == '':
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
+                    r.adjust_for_ambient_noise(source,duration= 2)
                     audio = r.listen(source)
+
                 try:
                     speech = r.recognize_google(audio)
                     self.txt.SetValue(speech)
@@ -102,6 +108,11 @@ def medi():
                     chat = random.choice(a5)
                     print(chat)
                     say(chat)
+                if input in pair6:
+                    chat = random.choice(a6)
+                    print(chat)
+                    say(chat)
+
 
     if __name__ == '__main__':
         app = wx.App(True)
@@ -114,8 +125,7 @@ def index():
         def __init__(self):
             wx.Frame.__init__(self, None,
                               pos=wx.DefaultPosition, size=wx.Size(1250, 950),
-                              style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION |
-                                    wx.CLOSE_BOX | wx.CLIP_CHILDREN,
+                              style=wx.MINIMIZE_BOX | wx.CLOSE_BOX| wx.SYSTEM_MENU | wx.CAPTION | wx.CLIP_CHILDREN,
                               title="Python Virtual Assistant")
             panel = wx.Panel(self)
             self.SetBackgroundColour('plum')
@@ -137,12 +147,16 @@ def index():
 
             self.Show()
 
+
+
         def OnEnter(self, event):
             input = self.txt.GetValue()
             input = input.lower()
             if input == '':
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
+                    r.adjust_for_ambient_noise(source,2)
+
                     audio = r.listen(source)
                 try:
                     speech = r.recognize_google(audio)
@@ -153,7 +167,7 @@ def index():
                     print("Could not request results from Google Speech Recognition service;{0}".format(e))
             else:
                 try:
-                    app_id = "Your App ID Here"
+                    app_id = "Insert YOur APP ID Here"
                     client = wolframalpha.Client(app_id)
                     res = client.query(input)
                     answer = next(res.results).text
@@ -164,8 +178,8 @@ def index():
                     input = input.split(' ')
                     input = " ".join(input[0:])
                     speak.Speak("I am searching for " + input)
-                    print(wikipedia.summary(input, sentences=5))
-                    say(wikipedia.summary(input, sentences=5))
+                    print(wikipedia.summary(input, sentences=3))
+                    say(wikipedia.summary(input, sentences=3))
 
     if __name__ == '__main__':
         app = wx.App(True)
